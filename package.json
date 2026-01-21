@@ -1,0 +1,19 @@
+{
+  "name": "bean-n-brew",
+  "version": "1.0.0",
+  "description": "coffee marketplace",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "author": "Anurag Yadav",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "mongoose": "^9.1.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
