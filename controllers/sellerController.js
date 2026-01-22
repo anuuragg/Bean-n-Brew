@@ -1,22 +1,37 @@
-export const getAllProducts = (req, res) => {
-    res.status(200).json({
-        status: 'success',
-        data: {
-            "id": 101,
-            "name": "Cappuccino",
-            "type": "hot",
-            "origin": "Italy",
-            "price": 180,
-            "currency": "INR",
-            "size": ["small", "medium", "large"],
-            "ingredients": [
-                "espresso",
-                "steamed milk",
-                "milk foam"
-            ],
-            "caffeine_mg": 80,
-            "is_available": true,
-            "rating": 4.6
-        }
-    })
+const Product = require('./../models/productModel')
+
+exports.getAllProducts = async (req, res) => {
+    try {
+        const products = await Product.find();
+        res.status(201).json({
+            status: 'success',
+            data: {
+                Product: products
+            },
+        })
+        
+    } catch (err) {
+        res.status(404).json({
+            status: 'fail',
+            message: err
+        })        
+    }
+}
+
+exports.createProduct = async (req, res) => {
+    try {
+        const newProduct = await Product.create(req.body);
+        res.status(201).json({
+            status: 'success',
+            data: {
+                Product: newProduct
+            },
+        })
+        
+    } catch (err) {
+        res.status(404).json({
+            status: 'fail',
+            message: err
+        })        
+    }
 }
