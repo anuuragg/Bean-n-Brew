@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const slugify = require('slugify');
 
 const prodSchema = new mongoose.Schema(
     {
@@ -9,7 +10,7 @@ const prodSchema = new mongoose.Schema(
             unique: true,
             trim: true,
             maxlength: [40, 'A product name must be less than or equal to 40 characters'],
-            minlenght: [10, 'A product name must be more than or equal to 10 characters'],
+            minlength: [10, 'A product name must be more than or equal to 10 characters'],
             validate: {
                 validator: function(val){
                     return validator.isAlpha(val, 'en-US', {ignore: ' '});
@@ -22,7 +23,7 @@ const prodSchema = new mongoose.Schema(
             required: [true, 'A product must have a brand'],
             trim: true
         },
-        // slug: String,
+        slug: String,
         description: {
             type: String,
             required: [true, 'A product must have a description'],
@@ -54,7 +55,7 @@ const prodSchema = new mongoose.Schema(
                 type: Number,
                 required: [true, 'A product stock quantity must be defined']
             },
-            isAvailabe: {
+            isAvailable: {
                 type: Boolean,
                 required: [true, 'A product availability must be defined']
             }
@@ -84,6 +85,11 @@ const prodSchema = new mongoose.Schema(
         tags: [String]
     }
 )
+
+prodSchema.pre('save', function(){
+    this.slug = slugify(this.name, {lower: true});
+});
+
 
 const Product = mongoose.model('Product', prodSchema);
 

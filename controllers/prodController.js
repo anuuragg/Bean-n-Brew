@@ -3,7 +3,7 @@ const Product = require('../models/productModel');
 exports.getAllProducts = async (req, res) => {
     try {
         const products = await Product.find();
-        res.status(201).json({
+        res.status(200).json({
             status: 'success',
             results: products.length,
             data: {
@@ -47,10 +47,12 @@ exports.createProduct = async (req, res) => {
         });
         
     } catch (err) {
-        res.status(404).json({
+        console.log('Full error:', err); // Add this
+        console.log('Error message:', err.message); // Add this
+        res.status(400).json({ // Changed from 404 to 400
             status: 'fail',
-            message: err
-        });       
+            message: err.message || err, // Changed to show actual message
+        });    
     }
 }
 
@@ -78,7 +80,7 @@ exports.updateProduct = async (req, res) => {
 exports.deleteProduct = async (req, res) => {
     try {
         await Product.findByIdAndDelete(req.params.id);
-        res.status(404).json({
+        res.status(204).json({
             status: 'success',
             data: null
         })
