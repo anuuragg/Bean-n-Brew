@@ -1,10 +1,15 @@
 const express = require('express');
-const sellerController = require('../controllers/prodController');
+const prodController = require('../controllers/prodController');
 
 const router = express.Router();
 
 router.route('/')
-    .get(sellerController.getAllProducts)
-    .post(sellerController.createProduct);
+    .get(prodController.getAllProducts)
+    .post(prodController.createProduct);
+    
+router.route('/:id')
+    .get(prodController.getProduct)
+    .patch(prodController.updateProduct)
+    .delete(prodController.deleteProduct);
 
 module.exports = router;

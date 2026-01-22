@@ -20,11 +20,18 @@ Bean-n-Brew is a RESTful API for a coffee e-commerce platform. This practice pro
 
 **GET** `/api/v1/product`
 - Retrieve all products
-- Returns array of product objects
+
+**GET** `/api/v1/product/:id`
+- Retrieve single product by ID
 
 **POST** `/api/v1/product`
 - Create a new product
-- Requires product data in request body
+
+**PATCH** `/api/v1/product/:id`
+- Update product data
+
+**DELETE** `/api/v1/product/:id`
+- Deletes a product
 
 ## Data Model
 
