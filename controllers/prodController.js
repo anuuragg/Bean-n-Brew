@@ -1,8 +1,11 @@
 const Product = require('../models/productModel');
+const APIFeatures = require('../utils/APIFeatures');
 
 exports.getAllProducts = async (req, res) => {
     try {
-        const products = await Product.find();
+        const features = new APIFeatures(Product.find(), req.query)
+            .filter();
+        const products = await features.query;
         res.status(200).json({
             status: 'success',
             results: products.length,
@@ -14,7 +17,7 @@ exports.getAllProducts = async (req, res) => {
     } catch (err) {
         res.status(404).json({
             status: 'fail',
-            message: err
+            message: err.message || err
         });       
     }
 }
@@ -47,11 +50,9 @@ exports.createProduct = async (req, res) => {
         });
         
     } catch (err) {
-        console.log('Full error:', err); // Add this
-        console.log('Error message:', err.message); // Add this
-        res.status(400).json({ // Changed from 404 to 400
+        res.status(400).json({
             status: 'fail',
-            message: err.message || err, // Changed to show actual message
+            message: err.message || err
         });    
     }
 }
