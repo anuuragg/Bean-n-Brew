@@ -83,8 +83,8 @@ const prodSchema = new mongoose.Schema(
             }
         },
         tags: [String]
-    }
-)
+    }, { timestamps: true }
+);
 
 prodSchema.pre('save', function(){
     this.slug = slugify(this.name, {lower: true});
