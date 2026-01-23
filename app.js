@@ -9,4 +9,11 @@ app.set('query parser', (str) => qs.parse(str));
 
 app.use('/api/v1/product', sellerRouter);
 
+app.get('/', (req, res) => {
+    res.status(200).json({
+            status: "ok",
+            message: "Bean & Brew API is running"
+        })
+})
+
 module.exports = app;
