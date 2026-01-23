@@ -76,7 +76,7 @@ exports.updateProduct = async (req, res) => {
     } catch (err) {
         res.status(404).json({
             status: 'fail',
-            message: err
+            message: err.message || err
         });
     }
 }
@@ -91,7 +91,37 @@ exports.deleteProduct = async (req, res) => {
     } catch (err) {
         res.status(404).json({
             status: 'fail',
-            message: err
+            message: err.message || err
+        });
+    }
+}
+
+exports.getProdStats = async (req, res) => {
+    try {
+        const stats = await Product.aggregate([
+            {
+                $group: {
+                    _id: '$brand',
+                    numProds: { $sum: 1 },
+                    numRatings: { $sum: '$ratings.reviewCount' },
+                    avgRatings: { $avg: '$ratings.avgRating' },
+                    avgPrice: { $avg: '$price' },
+                    minPrice: { $min: '$price' },
+                    maxPrice: { $max: '$price' }
+                }
+            }
+        ]);
+
+        res.status(200).json({
+            satus: 'success',
+            data: {
+                stats
+            }
+        })
+    } catch (err) {
+        res.status(404).json({
+            status: 'fail',
+            message: err.message || err
         });
     }
 }
