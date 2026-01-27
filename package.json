@@ -4,7 +4,8 @@
   "description": "coffee marketplace",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+    "start:prod": "SET NODE_ENV=production & nodemon index.js"
   },
   "author": "Anurag Yadav",
   "license": "ISC",

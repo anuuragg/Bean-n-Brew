@@ -89,10 +89,10 @@ Bean-n-Brew is a RESTful API for a coffee e-commerce platform. This practice pro
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/anuuragg/Bean-n-Brew.git
 
 # Navigate to project directory
-cd bean-n-brew
+cd Bean-n-Brew
 
 # Install dependencies
 npm install

@@ -1,4 +1,5 @@
 const express = require('express');
+const globalErrorHandler = require('./controllers/errorController')
 const sellerRouter = require('./routes/prodRoutes');
 const qs = require('qs');
 
@@ -15,5 +16,7 @@ app.get('/', (req, res) => {
             message: "Bean & Brew API is running"
         })
 })
+
+app.use(globalErrorHandler);
 
 module.exports = app;
