@@ -28,6 +28,15 @@ Bean-n-Brew is a RESTful API for a coffee e-commerce platform. This practice pro
 | PATCH | `/api/v1/product/:id` | Update product data |
 | DELETE | `/api/v1/product/:id` | Delete a product |
 
+#### Users
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/user` | Retrieve all users |
+| GET | `/api/v1/user/:id` | Retrieve single user by ID |
+| POST | `/api/v1/user/signup` | Create a new user account |
+| POST | `/api/v1/user/login` | Log into user account |
+
 ## Data Model
 
 ### Product Schema
