@@ -9,6 +9,31 @@ const signToken = id => {
     });
 };
 
+const createSendToken = (user, statusCode, res) => {
+    const token = signToken(user._id);
+    const cookieOptions = {
+        expiresIn: new Date(
+            Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 1000
+        ),
+        httpOnly: true
+    }
+
+    if(process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+
+    res.cookie('jwt', token, cookieOptions);
+
+    user.password = undefined;
+
+    res.status(statusCode).json({
+        status: 'success',
+        token,
+        data: {
+            user
+        }
+    });
+}
+
+
 exports.signup = catchAsync( async(req, res, next) => {
     const newUser = await User.create({
         name: req.body.name,
@@ -23,13 +48,7 @@ exports.signup = catchAsync( async(req, res, next) => {
     newUser.role = undefined;
     newUser.active = undefined;
 
-    res.status(200).json({
-        status: 'success',
-        token,
-        data: {
-            newUser
-        }
-    });
+    createSendToken(newUser, 201, res);
 });
 
 
@@ -51,13 +70,7 @@ exports.login = catchAsync( async(req, res, next) => {
     user.role = undefined;
     user.active = undefined;
 
-    res.status(200).json({
-        status: 'success',
-        token,
-        data: {
-            user
-        }
-    });
+    createSendToken(user, 200, res);
 });
 
 
