@@ -23,6 +23,8 @@ const createSendToken = (user, statusCode, res) => {
     res.cookie('jwt', token, cookieOptions);
 
     user.password = undefined;
+    user.role = undefined;
+    user.active = undefined;
 
     res.status(statusCode).json({
         status: 'success',
@@ -42,12 +44,6 @@ exports.signup = catchAsync( async(req, res, next) => {
         passwordConfirm: req.body.passwordConfirm
     });
 
-    const token = signToken(newUser._id);
-
-    newUser.password = undefined;
-    newUser.role = undefined;
-    newUser.active = undefined;
-
     createSendToken(newUser, 201, res);
 });
 
@@ -63,12 +59,6 @@ exports.login = catchAsync( async(req, res, next) => {
     if(!user || !(await user.correctPassword(password, user.password))){
         return next(new AppError('Invalid credentials! please retry again', 401));
     }
-
-    const token = signToken(user._id);
-
-    user.password = undefined;
-    user.role = undefined;
-    user.active = undefined;
 
     createSendToken(user, 200, res);
 });
