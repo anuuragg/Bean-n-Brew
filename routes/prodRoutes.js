@@ -9,11 +9,15 @@ router.route('/stats').get(prodController.getProdStats);
 router.route('/')
     .get(authController.protect, prodController.getAllProducts)
     .post(authController.protect, prodController.createProduct);
+
 router.route('/:id')
-    
     .get(authController.protect, prodController.getProduct)
     .patch(authController.protect, prodController.updateProduct)
-    .delete(authController.protect, prodController.deleteProduct);
+    .delete(
+        authController.protect,
+        authController.restrictTo('admin'),
+        prodController.deleteProduct
+    );
 
 
 
