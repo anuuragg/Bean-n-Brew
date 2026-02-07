@@ -40,7 +40,7 @@ const userSchema = new mongoose.Schema({
     },
     passwordChangedAt: Date,
     passwordResetToken: String,
-    passwrodResetExpires: Date,
+    passwordResetExpires: Date,
     active: {
         type: Boolean,
         default: true,
@@ -81,7 +81,7 @@ userSchema.methods.createPasswordResetToken =  function(){
         .update(resetToken)
         .digest('hex')
 
-    this.passwrodResetExpires = Date.now() * 10 * 60 * 1000;
+    this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
 
     return resetToken;
 }
