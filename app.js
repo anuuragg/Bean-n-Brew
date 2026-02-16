@@ -10,7 +10,6 @@ const globalErrorHandler = require('./controllers/errorController')
 const prodRouter = require('./routes/prodRoutes');
 const userRouter = require('./routes/userRoutes');
 const qs = require('qs');
-const { default: helmet } = require('helmet');
 
 const app = express();
 app.use(express.json());
