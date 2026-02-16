@@ -15,6 +15,10 @@ router.route('/updateMyPassword').patch(
     authController.updatePassword
 );
 
+router.route('/updateMe').patch(authController.protect, userController.updateMe);
+
+router.route('/deleteMe').patch(authController.protect, userController.deleteMe);
+
 router.route('/')
     .get(authController.protect, userController.getAllUser)
 
