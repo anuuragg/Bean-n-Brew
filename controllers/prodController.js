@@ -9,10 +9,21 @@ exports.getAllProducts = catchAsync(async (req, res) => {
         .sort()
         .limitFields()
         .paginate();
-    const products = await features.query;
+    const [products, total] = await Promise.all([
+        features.query,
+        Product.countDocuments(features.filterQuery)
+    ]);
     res.status(200).json({
         status: 'success',
         results: products.length,
+        pagination: {
+            page: features.page,
+            limit: features.limit,
+            total,
+            totalPages: Math.ceil(total / features.limit),
+            hasNextPage: features.page * features.limit < total,
+            hasPreviousPage: features.page > 1
+        },
         data: {
             products
         },
@@ -41,6 +52,13 @@ exports.createProduct = catchAsync (async (req, res) => {
 });
 
 exports.updateProduct = catchAsync (async (req, res) => {
+    const currentProduct = await Product.findById(req.params.id);
+    if (!currentProduct) throw new AppError('Product not found.', 404);
+    const nextPrice = Object.hasOwn(req.body, 'price') ? req.body.price : currentProduct.price;
+    const nextDiscount = Object.hasOwn(req.body, 'priceDiscount') ? req.body.priceDiscount : currentProduct.priceDiscount;
+    if (nextDiscount != null && Number(nextDiscount) >= Number(nextPrice)) {
+        throw new AppError('Discount price must be lower than the product price.', 400);
+    }
     const updatedProd = await Product.findByIdAndUpdate(req.params.id, req.body,{
         new: true,
         runValidators: true,

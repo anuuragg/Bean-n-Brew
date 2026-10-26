@@ -9,7 +9,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "start:prod": "node -e \"process.env.NODE_ENV='production'; require('./index')\""
+    "start:prod": "node -e \"process.env.NODE_ENV='production'; require('./index')\"",
+    "seed:admin": "node scripts/seedAdmin.js"
   },
   "author": "Anurag Yadav",
   "license": "ISC",
@@ -17,6 +18,7 @@
     "@exortek/express-mongo-sanitize": "^4.0.0",
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
     "dotenv": "^18.0.9",
     "express": "^5.3.0",
     "express-rate-limit": "^8.7.1",
@@ -25,6 +27,7 @@
     "mongoose": "^9.11.4",
     "nodemailer": "^10.2.1",
     "qs": "^6.16.1",
+    "razorpay": "^2.9.8",
     "slugify": "^1.6.9",
     "validator": "^13.15.35"
   },

@@ -35,10 +35,12 @@ const prodSchema = new mongoose.Schema(
         },
         price: {
             type: Number,
-            required: [true, 'A product must have a price']
+            required: [true, 'A product must have a price'],
+            min: [0.01, 'A product price must be greater than zero']
         },
         priceDiscount: {
             type: Number,
+            min: [0, 'Discount price cannot be negative'],
             validate: {
                 validator: function(val){
                     return val < this.price;
@@ -48,12 +50,14 @@ const prodSchema = new mongoose.Schema(
         },
         weight: {
             type: Number,
-            required: [true, "A product's weight must be defined"]
+            required: [true, "A product's weight must be defined"],
+            min: [0.01, 'Product weight must be greater than zero']
         },
         inventory: {
             stockQuantity: {
                 type: Number,
-                required: [true, 'A product stock quantity must be defined']
+                required: [true, 'A product stock quantity must be defined'],
+                min: [0, 'Stock quantity cannot be negative']
             },
             isAvailable: {
                 type: Boolean,
@@ -73,8 +77,8 @@ const prodSchema = new mongoose.Schema(
         ratings: {
             avgRating: {
                 type: Number,
-                default: 4.5,
-                min: [1.0, 'A rating must be more than 1.0'],
+                default: 0,
+                min: [0, 'A rating must be zero or higher'],
                 max: [5.0, 'A rating must be less than 5.0']
             },
             reviewCount: {

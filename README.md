@@ -9,40 +9,7 @@ Bean-n-Brew is a RESTful API for a coffee e-commerce platform. This practice pro
 
 ## API Documentation
 
-### Base URL
-```
-/api/v1
-```
-
-### Endpoints
-
-#### Products
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/v1/product` | Retrieve all products |
-| GET | `/api/v1/product/:id` | Retrieve single product by ID |
-| GET | `/api/v1/product?price[gte]=500&sort=-price&page=1&limit=10` | Retrieve products with filtering, sorting, and pagination |
-| GET | `/api/v1/product/stats` | Retrieve product statistics grouped by brand |
-| POST | `/api/v1/product` | Create a new product |
-| PATCH | `/api/v1/product/:id` | Update product data |
-| DELETE | `/api/v1/product/:id` | Delete a product |
-
-#### Users
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/v1/user` | Retrieve all users |
-| GET | `/api/v1/user/:id` | Retrieve single user by ID |
-| POST | `/api/v1/user/signup` | Create a new user account |
-| POST | `/api/v1/user/login` | Log into user account |
-| POST | `/api/v1/user/forgotPassword` | Send a password reset token by email |
-| POST | `/api/v1/user/resetPassword/:token` | Reset password with a valid token |
-| PATCH | `/api/v1/user/updateMyPassword` | Change the signed-in user's password |
-| PATCH | `/api/v1/user/updateMe` | Update the signed-in user's name or email |
-| PATCH | `/api/v1/user/deleteMe` | Deactivate the signed-in user's account |
-
-All product endpoints and user profile routes require a JWT. Product creation and updates, deletion, and user directory reads require an admin account. Send the JWT as `Authorization: Bearer <token>` or use the HTTP-only cookie. Password changes require `currentPassword`, `password`, and `passwordConfirm`.
+The versioned API base path is `/api/v1`. The [frontend API contract](docs/API.md) documents routes, access rules, payloads, response shapes, pagination, carts, orders, reviews, Razorpay test checkout, CORS, and admin setup.
 
 ## Data Model
 
@@ -61,7 +28,7 @@ All product endpoints and user profile routes require a JWT. Product creation an
 | `inventory.isAvailable` | Boolean | Yes | Product availability status |
 | `media.images` | Array[String] | Yes | Array of image URLs |
 | `media.thumbnail` | String | Yes | Thumbnail image URL |
-| `ratings.avgRating` | Number | No | 1.0-5.0, default: 4.5 |
+| `ratings.avgRating` | Number | No | 0-5, starts at 0 and is recalculated from reviews |
 | `ratings.reviewCount` | Number | No | Default: 0 |
 | `tags` | Array[String] | No | Product tags |
 
@@ -113,16 +80,17 @@ cd Bean-n-Brew
 # Install dependencies
 npm install
 
-# Set up environment variables
-# Copy config.env.example to config.env and set your MongoDB credentials and
-# JWT_SECRET. JWT_COOKIE_EXPIRES_IN is a number of days. Configure the EMAIL_*
-# values to enable password reset emails.
+# Set up environment variables and configure the first admin
+cp config.env.example config.env
+# Edit config.env with MongoDB/JWT credentials, frontend origins, and optional email/payment settings.
 
 # Start the server
 npm start
 ```
 
-Use `npm run dev` during development to restart the server when files change.
+Create the first admin from the terminal with `npm run seed:admin` after setting `ADMIN_EMAIL`, `ADMIN_NAME`, and `ADMIN_PASSWORD` in `config.env`. Use `npm run dev` during development to restart the server when files change.
+
+For a deployed frontend, set `FRONTEND_ORIGINS` and `FRONTEND_APP_URL` in the API host's environment. Razorpay checkout stays unavailable until the Razorpay test keys and webhook secret are configured; COD works without payment-provider credentials.
 
 ## Contributing
 

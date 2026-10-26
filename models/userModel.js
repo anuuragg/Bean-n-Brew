@@ -3,6 +3,11 @@ const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 
+const cartItemSchema = new mongoose.Schema({
+    product: { type: mongoose.Schema.ObjectId, ref: 'Product', required: true },
+    quantity: { type: Number, required: true, min: 1 }
+}, { _id: false });
+
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -39,16 +44,22 @@ const userSchema = new mongoose.Schema({
         }
     },
     passwordChangedAt: Date,
+    tokenVersion: { type: Number, default: 0, select: false },
     passwordResetToken: String,
     passwordResetExpires: Date,
     active: {
         type: Boolean,
         default: true,
         select: false
+    },
+    cartItems: {
+        type: [cartItemSchema],
+        default: [],
+        select: false
     }
 });
 
-userSchema.pre('save', async function(next){
+userSchema.pre('save', async function(){
     if(!this.isModified('password')) return;
 
     this.password = await bcrypt.hash(this.password, 12);
@@ -68,7 +79,7 @@ userSchema.methods.changedPasswordAfter = function(JWTTimestamp){
     return false;
 }
 
-userSchema.pre('save', function(next){
+userSchema.pre('save', function(){
     if(!this.isModified('password') || this.isNew) return;
     this.passwordChangedAt = Date.now() - 1000;
 })

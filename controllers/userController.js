@@ -12,7 +12,7 @@ const filterObj = (obj, ...allowedFields) => {
 }
 
 exports.getAllUser = catchAsync(async (req, res, next) => {
-    const users = await User.find({ active: { $ne: false } });
+    const users = await User.find({ active: { $ne: false } }).select('+role');
     res.status(200).json({
         status: 'success',
         data: {
@@ -21,9 +21,14 @@ exports.getAllUser = catchAsync(async (req, res, next) => {
     })
 });
 
+exports.getMe = (req, res) => {
+    const { id, name, email, photo, role } = req.user;
+    res.status(200).json({ status: 'success', data: { user: { id, name, email, photo, role } } });
+};
+
 
 exports.getUser = catchAsync( async(req, res, next) => {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.params.id).select('+role');
     if (!user) return next(new AppError('User not found, please try a different ID.', 404));
     
     res.status(200).json({
