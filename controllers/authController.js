@@ -62,7 +62,7 @@ exports.signup = catchAsync( async(req, res, next) => {
 exports.login = catchAsync( async(req, res, next) => {
     const {email, password} = req.body;
     if (!email || !password){
-       return next(new AppError('Missing credentials! please retry again', 404)); 
+       return next(new AppError('Email and password are required.', 400));
     } 
 
     const user = await User.findOne({email: email}).select('+password');
@@ -77,16 +77,18 @@ exports.login = catchAsync( async(req, res, next) => {
 
 exports.protect = catchAsync( async(req, res, next) => {
     let token;
-    if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
-        token = req.headers.authorization.split(' ')[1];
+    if(req.headers.authorization && /^Bearer\s/i.test(req.headers.authorization)){
+        token = req.headers.authorization.split(/\s+/)[1];
     }
+    if (!token && req.cookies) token = req.cookies.jwt;
 
     if(!token || token === 'null') return next(new AppError('You are not logged in! Please login to get access.', 401));
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.id);
+    const user = await User.findById(decoded.id).select('+role +active');
 
     if(!user) return next(new AppError('The user belonging to this token does no longer exist.', 401));
+    if (!user.active) return next(new AppError('This account is no longer active.', 401));
 
     if(user.changedPasswordAfter(decoded.iat)){
         return next( new AppError('You recently changed your password! please login again', 401))
@@ -108,7 +110,7 @@ exports.forgotPassword = catchAsync( async(req, res, next) => {
 
     const resetURL = `${req.protocol}://${req.get('host')}/api/v1/user/resetPassword/${resetToken}`;
     
-    const message = `Forgot your password? submit a PATCH request with your new password and passwordConfirm to: ${resetURL}\nIf you didn't forget your password, please ignore this email!`;
+    const message = `Forgot your password? submit a POST request with your new password and passwordConfirm to: ${resetURL}\nIf you didn't forget your password, please ignore this email!`;
 
     try{
         await sendEmail({
@@ -155,9 +157,12 @@ exports.resetPassword = catchAsync( async(req, res, next) => {
 
 
 exports.updatePassword = catchAsync( async(req, res, next) => {
+    if (!req.body.currentPassword || !req.body.password || !req.body.passwordConfirm) {
+        return next(new AppError('Current password, password, and passwordConfirm are required.', 400));
+    }
     const user = await User.findById(req.user.id).select('+password');
 
-    if(await user.correctPassword(req.body.passwordConfirm, req.body.password)){
+    if(!await user.correctPassword(req.body.currentPassword, user.password)){
     return next(new AppError('Invalid credentials! Please try again', 400));
     }
 

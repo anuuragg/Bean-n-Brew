@@ -90,6 +90,16 @@ prodSchema.pre('save', function(){
     this.slug = slugify(this.name, {lower: true});
 });
 
+prodSchema.pre('findOneAndUpdate', function(){
+    const update = this.getUpdate();
+    const name = update.name || update.$set?.name;
+    if (name) {
+        const slug = slugify(name, {lower: true});
+        if (update.$set) update.$set.slug = slug;
+        else update.slug = slug;
+    }
+});
+
 
 const Product = mongoose.model('Product', prodSchema);
 

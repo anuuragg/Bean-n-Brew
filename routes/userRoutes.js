@@ -20,9 +20,9 @@ router.route('/updateMe').patch(authController.protect, userController.updateMe)
 router.route('/deleteMe').patch(authController.protect, userController.deleteMe);
 
 router.route('/')
-    .get(authController.protect, userController.getAllUser)
+    .get(authController.protect, authController.restrictTo('admin'), userController.getAllUser)
 
 router.route('/:id')
-    .get(authController.protect, userController.getUser)
+    .get(authController.protect, authController.restrictTo('admin'), userController.getUser)
 
 module.exports = router;

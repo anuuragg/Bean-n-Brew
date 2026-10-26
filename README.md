@@ -36,6 +36,13 @@ Bean-n-Brew is a RESTful API for a coffee e-commerce platform. This practice pro
 | GET | `/api/v1/user/:id` | Retrieve single user by ID |
 | POST | `/api/v1/user/signup` | Create a new user account |
 | POST | `/api/v1/user/login` | Log into user account |
+| POST | `/api/v1/user/forgotPassword` | Send a password reset token by email |
+| POST | `/api/v1/user/resetPassword/:token` | Reset password with a valid token |
+| PATCH | `/api/v1/user/updateMyPassword` | Change the signed-in user's password |
+| PATCH | `/api/v1/user/updateMe` | Update the signed-in user's name or email |
+| PATCH | `/api/v1/user/deleteMe` | Deactivate the signed-in user's account |
+
+All product endpoints and user profile routes require a JWT. Product creation and updates, deletion, and user directory reads require an admin account. Send the JWT as `Authorization: Bearer <token>` or use the HTTP-only cookie. Password changes require `currentPassword`, `password`, and `passwordConfirm`.
 
 ## Data Model
 
@@ -51,7 +58,7 @@ Bean-n-Brew is a RESTful API for a coffee e-commerce platform. This practice pro
 | `priceDiscount` | Number | No | Must be less than price |
 | `weight` | Number | Yes | Product weight in grams |
 | `inventory.stockQuantity` | Number | Yes | Available stock count |
-| `inventory.isAvailabe` | Boolean | Yes | Product availability status |
+| `inventory.isAvailable` | Boolean | Yes | Product availability status |
 | `media.images` | Array[String] | Yes | Array of image URLs |
 | `media.thumbnail` | String | Yes | Thumbnail image URL |
 | `ratings.avgRating` | Number | No | 1.0-5.0, default: 4.5 |
@@ -70,7 +77,7 @@ Bean-n-Brew is a RESTful API for a coffee e-commerce platform. This practice pro
     "weight": 250,
     "inventory": {
         "stockQuantity": 150,
-        "isAvailabe": true
+        "isAvailable": true
     },
     "media": {
         "images": [
@@ -107,7 +114,14 @@ cd Bean-n-Brew
 npm install
 
 # Set up environment variables
-# Create a .env file with your MongoDB connection string
+# Create config.env (JWT_COOKIE_EXPIRES_IN is a number of days):
+# DATABASE=mongodb+srv://<user>:<db_password>@<cluster>/<database>
+# DB_PASSWORD=...
+# JWT_SECRET=...
+# JWT_EXPIRES_IN=90d
+# JWT_COOKIE_EXPIRES_IN=90
+# Configure EMAIL_HOST, EMAIL_PORT, EMAIL_USERNAME, and EMAIL_PASSWORD
+# to enable password reset emails.
 
 # Start the server
 npm start

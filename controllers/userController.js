@@ -12,7 +12,7 @@ const filterObj = (obj, ...allowedFields) => {
 }
 
 exports.getAllUser = catchAsync(async (req, res, next) => {
-    const users = await User.find();
+    const users = await User.find({ active: { $ne: false } });
     res.status(200).json({
         status: 'success',
         data: {
@@ -24,7 +24,7 @@ exports.getAllUser = catchAsync(async (req, res, next) => {
 
 exports.getUser = catchAsync( async(req, res, next) => {
     const user = await User.findById(req.params.id);
-    if (!user) return next(new AppError('User not found, please try different ID'));
+    if (!user) return next(new AppError('User not found, please try a different ID.', 404));
     
     res.status(200).json({
         status: 'success',
@@ -36,7 +36,7 @@ exports.getUser = catchAsync( async(req, res, next) => {
 
 
 exports.updateMe = catchAsync( async(req, res, next) => {
-    if(req.body.password || req.body.passwordconfirm){
+    if(req.body.password || req.body.passwordConfirm || req.body.currentPassword){
         return next(
             new AppError('This route is not for password updates. Please use /updateMyPassword.', 400)
         )

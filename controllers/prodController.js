@@ -1,6 +1,7 @@
 const Product = require('../models/productModel');
 const apiFeatures = require('../utils/APIFeatures');
 const catchAsync = require('../utils/catchAsync');
+const AppError = require('../utils/appError');
 
 exports.getAllProducts = catchAsync(async (req, res) => {
     const features = new apiFeatures(Product.find(), req.query)
@@ -13,13 +14,14 @@ exports.getAllProducts = catchAsync(async (req, res) => {
         status: 'success',
         results: products.length,
         data: {
-            Product: products
+            products
         },
     });
 });
 
 exports.getProduct = catchAsync (async (req, res) => {
     const product = await Product.findById(req.params.id);
+    if (!product) throw new AppError('Product not found.', 404);
     res.status(200).json({
         status: 'success',
         data: {
@@ -33,7 +35,7 @@ exports.createProduct = catchAsync (async (req, res) => {
     res.status(201).json({
         status: 'success',
         data: {
-            Product: newProduct
+            product: newProduct
         },
     });
 });
@@ -43,6 +45,7 @@ exports.updateProduct = catchAsync (async (req, res) => {
         new: true,
         runValidators: true,
     });
+    if (!updatedProd) throw new AppError('Product not found.', 404);
 
     res.status(200).json({
         status: 'success',
@@ -53,11 +56,9 @@ exports.updateProduct = catchAsync (async (req, res) => {
 });
 
 exports.deleteProduct = catchAsync (async (req, res) => {
-    await Product.findByIdAndDelete(req.params.id);
-    res.status(204).json({
-        status: 'success',
-        data: null
-    });
+    const product = await Product.findByIdAndDelete(req.params.id);
+    if (!product) throw new AppError('Product not found.', 404);
+    res.status(204).end();
 });
 
 exports.getProdStats = catchAsync (async (req, res) => {
@@ -76,7 +77,7 @@ exports.getProdStats = catchAsync (async (req, res) => {
     ]);
 
     res.status(200).json({
-        satus: 'success',
+        status: 'success',
         data: {
             stats
         }

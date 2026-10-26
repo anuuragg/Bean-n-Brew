@@ -12,6 +12,11 @@ const userRouter = require('./routes/userRoutes');
 const qs = require('qs');
 
 const app = express();
+app.use((req, res, next) => {
+    const databaseReady = app.locals.databaseReady;
+    if (!databaseReady) return next();
+    databaseReady.then(() => next()).catch(next);
+});
 app.use(express.json());
 app.use(cookieParser());
 
@@ -41,6 +46,10 @@ app.get('/', (req, res) => {
             message: "Bean & Brew API is running"
         })
 })
+
+app.use((req, res, next) => {
+    next(new (require('./utils/appError'))(`Can't find ${req.originalUrl} on this server.`, 404));
+});
 
 app.use(globalErrorHandler);
 

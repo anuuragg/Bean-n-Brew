@@ -6,8 +6,8 @@ const handleCastErrorDB = err => {
 }
 
 const handleDuplicateFieldsDB = err => {
-    const value = err.errmsg.match(/(["'])(\\?.)*?\1/);
-    const message = `Duplicate field value: ${value[0]}. Please use another value!`;
+    const value = Object.values(err.keyValue || {})[0] || 'value';
+    const message = `Duplicate field value: ${value}. Please use another value!`;
     return new AppError(message, 400);
 }
 
@@ -48,7 +48,7 @@ module.exports = (err, req, res, next) => {
     err.statusCode = err.statusCode || 500;
     err.status = err.status || 'error';
     
-    const env = process.env.NODE_ENV?.trim(' ');
+    const env = (process.env.NODE_ENV || 'development').trim();
     if(env === 'development'){
         sendErrorDev(err, res);
     } else if(env === 'production'){
@@ -57,7 +57,13 @@ module.exports = (err, req, res, next) => {
         if(error.name === 'CastError') error = handleCastErrorDB(error);
         if(error.code === 11000) error = handleDuplicateFieldsDB(error);
         if(error.name === 'ValidationError') error = handleValidationErrorDB(error);
+        if (error.type === 'entity.parse.failed') error = new AppError('Invalid JSON in request body.', 400);
+        if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+            error = new AppError('Your authentication token is invalid or expired. Please log in again.', 401);
+        }
 
         sendErrorProd(error, res);
+    } else {
+        sendErrorProd(err, res);
     }
 };
