@@ -114,14 +114,9 @@ cd Bean-n-Brew
 npm install
 
 # Set up environment variables
-# Create config.env (JWT_COOKIE_EXPIRES_IN is a number of days):
-# DATABASE=mongodb+srv://<user>:<db_password>@<cluster>/<database>
-# DB_PASSWORD=...
-# JWT_SECRET=...
-# JWT_EXPIRES_IN=90d
-# JWT_COOKIE_EXPIRES_IN=90
-# Configure EMAIL_HOST, EMAIL_PORT, EMAIL_USERNAME, and EMAIL_PASSWORD
-# to enable password reset emails.
+# Copy config.env.example to config.env and set your MongoDB credentials and
+# JWT_SECRET. JWT_COOKIE_EXPIRES_IN is a number of days. Configure the EMAIL_*
+# values to enable password reset emails.
 
 # Start the server
 npm start
