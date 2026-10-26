@@ -2,6 +2,7 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 
 dotenv.config({path: './config.env'});
+if (process.env.VERCEL) process.env.NODE_ENV = 'production';
 
 const app = require('./app');
 

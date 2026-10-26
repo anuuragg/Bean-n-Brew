@@ -49,7 +49,7 @@ module.exports = (err, req, res, next) => {
     err.status = err.status || 'error';
     
     const env = (process.env.NODE_ENV || 'development').trim();
-    if(env === 'development'){
+    if(env === 'development' && !process.env.VERCEL){
         sendErrorDev(err, res);
     } else if(env === 'production'){
         let error = err;

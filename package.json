@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "coffee marketplace",
   "main": "index.js",
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
@@ -11,23 +14,21 @@
   "author": "Anurag Yadav",
   "license": "ISC",
   "dependencies": {
+    "@exortek/express-mongo-sanitize": "^4.0.0",
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
-    "dotenv": "^17.2.3",
-    "express": "^5.2.1",
-    "express-mongo-sanitize": "^2.2.0",
-    "express-rate-limit": "^8.2.1",
-    "helmet": "^8.1.0",
-    "hpp": "^0.2.3",
+    "dotenv": "^18.0.9",
+    "express": "^5.3.0",
+    "express-rate-limit": "^8.7.1",
+    "helmet": "^8.3.0",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.1.5",
-    "nodemailer": "^7.0.13",
-    "qs": "^6.14.1",
-    "slugify": "^1.6.6",
-    "validator": "^13.15.26",
-    "xss-clean": "^0.1.4"
+    "mongoose": "^9.11.4",
+    "nodemailer": "^10.2.1",
+    "qs": "^6.16.1",
+    "slugify": "^1.6.9",
+    "validator": "^13.15.35"
   },
   "devDependencies": {
-    "nodemon": "^3.1.11"
+    "nodemon": "^3.1.14"
   }
 }

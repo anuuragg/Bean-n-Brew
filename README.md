@@ -97,7 +97,7 @@ All product endpoints and user profile routes require a JWT. Product creation an
 ## Getting Started
 
 ### Prerequisites
-- Node.js (v14 or higher)
+- Node.js (v20.19 or higher)
 - MongoDB
 - npm or yarn
 
@@ -121,6 +121,8 @@ npm install
 # Start the server
 npm start
 ```
+
+Use `npm run dev` during development to restart the server when files change.
 
 ## Contributing
 
